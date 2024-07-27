@@ -10,12 +10,9 @@ def d_m(S, K, T, t, r, sigma):
     d_plus = d_p(S, K, T, t, r, sigma)
     return d_plus - sigma * math.sqrt( T - t )
 
-print(d_p(50, 50, 90/365, 0, 0.05, 0.4))
+# print(d_p(50, 50, 90/365, 0, 0.05, 0.4))
 
 def black_scholes(S, K, T, t, r, sigma, option_type = 'call'):
-    
-    # d_plus = ( np.log( S / K ) + ( T - t ) * ( r + sigma ** 2 / 2 ) ) / ( sigma * math.sqrt( T - t ) )
-    # d_minus = d_plus - sigma * math.sqrt( T - t )
 
     d_plus = d_p(S, K, T, t, r, sigma)
     d_minus = d_m(S, K, T, t, r, sigma)
@@ -25,7 +22,7 @@ def black_scholes(S, K, T, t, r, sigma, option_type = 'call'):
     elif option_type == 'put':
         return -S * st.norm.cdf(-d_plus) + K * math.exp( -r * ( T - t ) ) * st.norm.cdf(-d_minus)
 
-print(black_scholes(31.55, 22.75, 3.5, 0, 0.05, 0.5, 'call'))
+# print(black_scholes(31.55, 22.75, 3.5, 0, 0.05, 0.5, 'call'))
 
 calc_type = input("Calculator type: \n Press 1 for Black-Scholes Calculation \n Press 2 for\n")
 
