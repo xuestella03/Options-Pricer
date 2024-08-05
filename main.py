@@ -20,6 +20,21 @@ def d_m(S, K, T, t, r, sigma):
 # print(d_p(50, 50, 90/365, 0, 0.05, 0.4))
 
 def black_scholes(S, K, T, t, r, sigma, option_type = 'call'):
+    """
+    Calculates the option price at time t. 
+
+    Args:
+        S: stock price at time t
+        K: strike price
+        T: exercise date (days)
+        t: current date
+        r: risk-free rate
+        sigma: volatility
+        option_type: call or put
+
+    Returns:
+        price
+    """
 
     d_plus = d_p(S, K, T, t, r, sigma)
     d_minus = d_m(S, K, T, t, r, sigma)
@@ -78,7 +93,7 @@ def rho(S, K, T, t, r, sigma):
 
 # plt.show()
 
-# calc_type = input("Calculator type: \n Press 1 for Black-Scholes Calculation \n Press 2 for\n")
+# calc_type = input("Calculator type: \n Press 1 for Black-Scholes Calculation \n Press 2 for Greeks\n")
 
 # if calc_type == "1":
 #     S = float(input("Input the prince of the underlying stock (S):\n"))
@@ -110,11 +125,12 @@ def print_summary(portfolio_sims, label):
     quart_25 = np.percentile(final_portfolio_values, 25)
     quart_75 = np.percentile(final_portfolio_values, 75)
 
-    # 95% confidence that the portfolio will not get below VaR_95 in the given time period
     VaR_95 = np.percentile(final_portfolio_values, 5)
     VaR_99 = np.percentile(final_portfolio_values, 1)
     
-    print(f"Summary for {label}:")
+    print(f"Summary for:")
+    for l in label:
+        print(f"  {l}")
     print(f"1st Quartile: ${quart_25:,.2f}")
     print(f"Mean Final Value: ${mean_final_value:,.2f}")
     print(f"3rd Quartile: ${quart_75:,.2f}")
@@ -143,7 +159,6 @@ def monte_carlo(stocks, start, end, weights, mc_sims, T, initialPortfolio):
     meanReturns, covMatrix = get_data(stocks, start, end)
 
     weights /= np.sum(weights)
-    # print("weights:" + weights)
 
     meanMat = np.full(shape=(T, len(weights)), fill_value=meanReturns)
     meanMat = meanMat.T
@@ -168,21 +183,42 @@ def monte_carlo(stocks, start, end, weights, mc_sims, T, initialPortfolio):
     plt.xlabel('Days')
     plt.title('MC simulation of a stock portfolio')
 
-    # let = plt.legend()
-
     label = []
 
     for i in range(0, len(weights)):
         label.append([stocks[i], weights[i]])
 
+    print(start)
     print_summary(portfolio_sims, label)
     plt.show()
 
-endDate = dt.datetime.now() - dt.timedelta(days=365)
-startDate = endDate - dt.timedelta(days=300)
+
 # monte_carlo(['NVDA', 'INTC', 'SNAP', 'GOOGL'], startDate, endDate, [200, 200, 200, 1], 1000, 365, 10000)
+
+# 2024-25; ended up ?
+endDate = dt.datetime.now()
+startDate = endDate - dt.timedelta(days=300)
 monte_carlo(['AAPL', 'COST', 'TSM', 'TSLA', 'BAC', 'MSFT', 'AMZN', 'HD', 'KO', 'CMG'], 
             startDate, endDate, [3, 1, 1, 2, 1, 4, 2, 1, 1, 1], 1000, 365, 453153)
+
+# 2023-24; ended up 453153
+endDate = dt.datetime.now() - dt.timedelta(days=365)
+startDate = endDate - dt.timedelta(days=300)
+monte_carlo(['AAPL', 'COST', 'TSM', 'TSLA', 'BAC', 'MSFT', 'AMZN', 'HD', 'KO', 'CMG'], 
+            startDate, endDate, [3, 1, 1, 2, 1, 4, 2, 1, 1, 1], 1000, 365, 377378)
+
+# 2017-18; ended up 626318
+endDate = dt.datetime.now()  - dt.timedelta(days=365*7)
+startDate = endDate - dt.timedelta(days=300)
+monte_carlo(['AAPL', 'COST', 'TSM', 'TSLA', 'BAC', 'MSFT', 'AMZN', 'HD', 'KO', 'CMG'], 
+            startDate, endDate, [3, 1, 1, 2, 1, 4, 2, 1, 1, 1], 1000, 365, 414988)
+
+# 2013-14; ended up 247644
+endDate = dt.datetime.now()  - dt.timedelta(days=365*11)
+startDate = endDate - dt.timedelta(days=300)
+
+monte_carlo(['AAPL', 'COST', 'TSM', 'TSLA', 'BAC', 'MSFT', 'AMZN', 'HD', 'KO', 'CMG'], 
+            startDate, endDate, [3, 1, 1, 2, 1, 4, 2, 1, 1, 1], 1000, 365, 185892)
 
 # data = yf.download(["AAPL","COST", 'TSM', 'TSLA', 'BAC', 'MSFT', 'AMZN', 'HD', 'KO', 'CMG'], start='2019-09-10', end='2020-10-09')
 # data = data['Close']
